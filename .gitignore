@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+
+# Spring Boot – lokale Konfiguration nie ins Repo
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-secret.properties
+
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# IDEs
+.idea/
+.vscode/
+*.iml
