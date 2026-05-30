@@ -25,7 +25,6 @@ import { submitRequest } from '../api/requestApi';
 export default function RequestFormPage() {
   const navigate = useNavigate();
 
-  // Formulardaten
   const [form, setForm] = useState({
     serviceOfferId: '',
     requesterName: '',
@@ -36,42 +35,28 @@ export default function RequestFormPage() {
     accessibilityNeeds: '',
   });
 
-  // Datenschutz-Checkbox separat, weil kein String-Wert
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
-
-  // Validierungsfehler pro Feld
   const [errors, setErrors] = useState({});
-
-  // Allgemeiner Fehler (z.B. Backend nicht erreichbar)
   const [submitError, setSubmitError] = useState(null);
-
-  // Wird während des Absendens auf true gesetzt
   const [loading, setLoading] = useState(false);
-
-  // Serviceangebote für das Dropdown
   const [services, setServices] = useState([]);
 
-  // Serviceangebote beim ersten Rendern laden
   useEffect(() => {
     fetchServices()
       .then(setServices)
       .catch(() => setSubmitError('Serviceangebote konnten nicht geladen werden.'));
   }, []);
 
-  // Einzelnes Formularfeld aktualisieren
   function handleChange(e) {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-    // Fehler für dieses Feld zurücksetzen sobald der Nutzer tippt
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
   }
 
-  // Frontend-Validierung – gibt true zurück wenn alles valid ist
   function validate() {
     const newErrors = {};
-
     if (!form.serviceOfferId) {
       newErrors.serviceOfferId = 'Bitte wählen Sie ein Serviceangebot aus.';
     }
@@ -89,7 +74,6 @@ export default function RequestFormPage() {
     if (!privacyAccepted) {
       newErrors.privacy = 'Bitte stimmen Sie der Datenverarbeitung zu.';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -97,17 +81,12 @@ export default function RequestFormPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setSubmitError(null);
-
-    // Abbrechen wenn Frontend-Validierung fehlschlägt
     if (!validate()) return;
-
     setLoading(true);
     try {
       const response = await submitRequest(form);
-      // Vorgangsnummer zur Bestätigungsseite mitgeben
       navigate('/request/success', { state: { response } });
     } catch (err) {
-      // Backend-Validierungsfehler (z.B. { requesterEmail: "..." })
       if (err && typeof err === 'object' && !err.message) {
         setErrors(err);
       } else {
@@ -127,7 +106,6 @@ export default function RequestFormPage() {
         Füllen Sie das Formular aus. Wir melden uns schnellstmöglich bei Ihnen.
       </Typography>
 
-      {/* Allgemeiner Fehler oben im Formular */}
       {submitError && (
         <Alert severity="error" sx={{ mb: 3 }} role="alert">
           {submitError}
@@ -148,7 +126,11 @@ export default function RequestFormPage() {
           error={!!errors.serviceOfferId}
           helperText={errors.serviceOfferId}
           sx={{ mb: 3 }}
-          inputProps={{ 'aria-required': 'true' }}
+          inputProps={{
+            'aria-required': 'true',
+            'aria-describedby': errors.serviceOfferId ? 'error-serviceOfferId' : undefined,
+          }}
+          FormHelperTextProps={{ id: 'error-serviceOfferId', role: 'alert' }}
         >
           <MenuItem value="">— Bitte auswählen —</MenuItem>
           {services.map((s) => (
@@ -167,7 +149,11 @@ export default function RequestFormPage() {
           error={!!errors.requesterName}
           helperText={errors.requesterName}
           sx={{ mb: 3 }}
-          inputProps={{ 'aria-required': 'true' }}
+          inputProps={{
+            'aria-required': 'true',
+            'aria-describedby': errors.requesterName ? 'error-requesterName' : undefined,
+          }}
+          FormHelperTextProps={{ id: 'error-requesterName', role: 'alert' }}
         />
 
         {/* E-Mail */}
@@ -182,7 +168,11 @@ export default function RequestFormPage() {
           error={!!errors.requesterEmail}
           helperText={errors.requesterEmail}
           sx={{ mb: 3 }}
-          inputProps={{ 'aria-required': 'true' }}
+          inputProps={{
+            'aria-required': 'true',
+            'aria-describedby': errors.requesterEmail ? 'error-requesterEmail' : undefined,
+          }}
+          FormHelperTextProps={{ id: 'error-requesterEmail', role: 'alert' }}
         />
 
         {/* Telefon (optional) */}
@@ -209,7 +199,11 @@ export default function RequestFormPage() {
           error={!!errors.message}
           helperText={errors.message}
           sx={{ mb: 3 }}
-          inputProps={{ 'aria-required': 'true' }}
+          inputProps={{
+            'aria-required': 'true',
+            'aria-describedby': errors.message ? 'error-message' : undefined,
+          }}
+          FormHelperTextProps={{ id: 'error-message', role: 'alert' }}
         />
 
         {/* Wunschdatum (optional) */}
@@ -252,13 +246,13 @@ export default function RequestFormPage() {
             }
             label="Ich stimme der Verarbeitung meiner Daten zur Bearbeitung dieser Anfrage zu."
           />
-          {/* Fehlermeldung für Checkbox – nicht nur farblich, sondern auch als Text */}
           {errors.privacy && (
             <Typography
               variant="caption"
               color="error"
               display="block"
               role="alert"
+              id="error-privacy"
             >
               {errors.privacy}
             </Typography>
