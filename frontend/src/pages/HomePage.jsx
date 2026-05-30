@@ -4,6 +4,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import { fetchSettings } from '../api/settingsApi';
 import LoadingIndicator from '../components/LoadingIndicator';
 
@@ -27,7 +31,6 @@ export default function HomePage() {
   }, []);
 
   if (loading) return <LoadingIndicator />;
-
   if (error) return (
     <Container>
       <Typography color="error" role="alert">{error}</Typography>
@@ -37,21 +40,25 @@ export default function HomePage() {
   return (
     <Container maxWidth="md">
 
-      {/* Portalname und Kommune */}
-      <Box sx={{ textAlign: 'center', mt: 6, mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
+      {/* Hero-Bereich */}
+      <Box sx={{ textAlign: 'center', mt: { xs: 4, md: 8 }, mb: 4 }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{ fontSize: { xs: '2rem', md: '3rem' } }}
+        >
           {settings.portalTitle}
         </Typography>
         <Typography variant="h6" color="text.secondary" gutterBottom>
           {settings.municipalityName}
         </Typography>
-
-        {/* Begrüßungstext */}
-        <Typography variant="body1" sx={{ mt: 2, mb: 4, maxWidth: 600, mx: 'auto' }}>
+        <Typography
+          variant="body1"
+          sx={{ mt: 2, mb: 4, maxWidth: 600, mx: 'auto' }}
+        >
           {settings.welcomeText}
         </Typography>
-
-        {/* Call-to-Action */}
         <Button
           variant="contained"
           size="large"
@@ -62,19 +69,28 @@ export default function HomePage() {
         </Button>
       </Box>
 
-      {/* Kontaktdaten */}
-      <Box sx={{ textAlign: 'center', mt: 6, p: 3, backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-        <Typography variant="h6" gutterBottom>Kontakt</Typography>
-        <Typography variant="body2">
-          E-Mail:{' '}
-          <a href={`mailto:${settings.contactEmail}`}>
-            {settings.contactEmail}
-          </a>
+      {/* Kontaktbereich */}
+      <Paper elevation={1} sx={{ p: { xs: 2, md: 4 }, mt: 6 }}>
+        <Typography variant="h6" gutterBottom textAlign="center">
+          Kontakt
         </Typography>
-        <Typography variant="body2">
-          Telefon: {settings.contactPhone}
-        </Typography>
-      </Box>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item xs={12} sm="auto">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <EmailIcon fontSize="small" color="primary" aria-hidden="true" />
+              <a href={`mailto:${settings.contactEmail}`}>
+                {settings.contactEmail}
+              </a>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm="auto">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <PhoneIcon fontSize="small" color="primary" aria-hidden="true" />
+              <Typography variant="body2">{settings.contactPhone}</Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Paper>
 
     </Container>
   );
