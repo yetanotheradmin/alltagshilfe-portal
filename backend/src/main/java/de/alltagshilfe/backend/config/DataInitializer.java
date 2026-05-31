@@ -4,7 +4,7 @@ import de.alltagshilfe.backend.entity.*;
 import de.alltagshilfe.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -24,6 +24,13 @@ public class DataInitializer implements CommandLineRunner {
     private final PortalSettingsRepository portalSettingsRepository;
     private final ServiceOfferRepository serviceOfferRepository;
     private final UserRepository userRepository;
+
+    /**
+     * PasswordEncoder wird von Spring injiziert (definiert in SecurityConfig).
+     * Wir erstellen keine eigene Instanz, damit überall derselbe
+     * Encoder verwendet wird.
+     */
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
@@ -78,8 +85,9 @@ public class DataInitializer implements CommandLineRunner {
             User admin = new User();
             admin.setName("Admin");
             admin.setEmail("admin@musterstadt.de");
-            // Passwort wird niemals im Klartext gespeichert
-            admin.setPasswordHash(new BCryptPasswordEncoder().encode("admin123"));
+            // Passwort wird niemals im Klartext gespeichert –
+            // BCrypt erzeugt einen sicheren Hash der nicht rückrechenbar ist
+            admin.setPasswordHash(passwordEncoder.encode("admin123"));
             admin.setRole(Role.ADMIN);
             admin.setActive(true);
             userRepository.save(admin);
