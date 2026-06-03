@@ -23,3 +23,33 @@ async function adminFetch(path, options = {}) {
 export async function fetchDashboard() {
   return adminFetch('/dashboard');
 }
+
+export async function fetchAdminServices() {
+  return adminFetch('/services');
+}
+
+export async function fetchAdminServiceById(id) {
+  return adminFetch(`/services/${id}`);
+}
+
+export async function createAdminService(data) {
+  return adminFetch('/services', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateAdminService(id, data) {
+  return adminFetch(`/services/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAdminService(id) {
+  const response = await fetch(`${BASE_URL}/services/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+  if (!response.ok) throw new Error(`Fehler: ${response.status}`);
+}

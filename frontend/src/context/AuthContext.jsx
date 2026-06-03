@@ -11,7 +11,7 @@ import { fetchCurrentUser, login as apiLogin, logout as apiLogout } from '../api
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined);
 
   // Beim ersten Laden prüfen ob noch eine Session existiert
   useEffect(() => {

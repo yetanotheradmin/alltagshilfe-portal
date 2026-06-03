@@ -13,6 +13,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import ImprintPage from './pages/ImprintPage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminServicePage from './pages/AdminServicePage';
 
 /**
  * Hauptkomponente der Anwendung.
@@ -43,6 +44,11 @@ export default function App() {
           <Route path="/admin" element={
             <ProtectedRoute>
               <Layout><AdminDashboardPage /></Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/services" element={
+            <ProtectedRoute>
+              <Layout><AdminServicePage /></Layout>
             </ProtectedRoute>
           } />
         </Routes>

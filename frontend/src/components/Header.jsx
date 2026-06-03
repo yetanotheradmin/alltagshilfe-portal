@@ -30,7 +30,7 @@ const navItems = [
   { label: 'Serviceangebote', path: '/services' },
   { label: 'Anfrage stellen', path: '/request' },
   { label: 'Barrierefreiheit', path: '/accessibility' },
-  { label: 'Admin', path: '/login' },
+  { label: 'Admin', path: '/admin' },
 ];
 
 export default function Header() {
