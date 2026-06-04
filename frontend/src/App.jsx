@@ -14,6 +14,8 @@ import ImprintPage from './pages/ImprintPage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminServicePage from './pages/AdminServicePage';
+import AdminRequestPage from './pages/AdminRequestPage';
+import AdminRequestDetailPage from './pages/AdminRequestDetailPage';
 
 /**
  * Hauptkomponente der Anwendung.
@@ -49,6 +51,16 @@ export default function App() {
           <Route path="/admin/services" element={
             <ProtectedRoute>
               <Layout><AdminServicePage /></Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/requests" element={
+            <ProtectedRoute>
+              <Layout><AdminRequestPage /></Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/requests/:id" element={
+            <ProtectedRoute>
+              <Layout><AdminRequestDetailPage /></Layout>
             </ProtectedRoute>
           } />
         </Routes>

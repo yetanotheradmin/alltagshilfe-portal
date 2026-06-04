@@ -6,7 +6,7 @@ const BASE_URL = 'http://localhost:8080/api/admin';
  * Fehler wenn der Server 401 oder 403 zurückgibt.
  */
 async function adminFetch(path, options = {}) {
-    console.log('Fetching:', `${BASE_URL}${path}`); // temporär
+  console.log('Fetching:', `${BASE_URL}${path}`); // temporär
   const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
     credentials: 'include',
@@ -52,4 +52,26 @@ export async function deleteAdminService(id) {
     credentials: 'include',
   });
   if (!response.ok) throw new Error(`Fehler: ${response.status}`);
+}
+
+export async function fetchAdminRequests() {
+  return adminFetch('/requests');
+}
+
+export async function fetchAdminRequestById(id) {
+  return adminFetch(`/requests/${id}`);
+}
+
+export async function updateRequestStatus(id, status) {
+  return adminFetch(`/requests/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
+}
+
+export async function updateRequestComment(id, adminComment) {
+  return adminFetch(`/requests/${id}/comment`, {
+    method: 'PUT',
+    body: JSON.stringify({ adminComment }),
+  });
 }
