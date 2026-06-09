@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class PortalSettingsDto {
+    private Long id;
     private String municipalityName;
     private String portalTitle;
     private String welcomeText;
