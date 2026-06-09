@@ -75,3 +75,43 @@ export async function updateRequestComment(id, adminComment) {
     body: JSON.stringify({ adminComment }),
   });
 }
+
+// ── Benutzerverwaltung ──────────────────────────────────────
+
+export async function fetchAdminUsers() {
+  return adminFetch('/users');
+}
+
+export async function createAdminUser(data) {
+  return adminFetch('/users', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateUserRole(id, role) {
+  return adminFetch(`/users/${id}/role`, {
+    method: 'PUT',
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function updateUserActive(id, active) {
+  return adminFetch(`/users/${id}/active`, {
+    method: 'PUT',
+    body: JSON.stringify({ active }),
+  });
+}
+
+// ── Portaleinstellungen (Admin) ─────────────────────────────
+
+export async function fetchAdminSettings() {
+  return adminFetch('/settings');
+}
+
+export async function updateAdminSettings(data) {
+  return adminFetch('/settings', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
