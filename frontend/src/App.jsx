@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useMemo } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './context/AuthContext';
+import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -16,19 +20,30 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminServicePage from './pages/AdminServicePage';
 import AdminRequestPage from './pages/AdminRequestPage';
 import AdminRequestDetailPage from './pages/AdminRequestDetailPage';
+import AdminUserPage from './pages/AdminUserPage';
+import AdminSettingsPage from './pages/AdminSettingsPage';
 
 /**
- * Hauptkomponente der Anwendung.
- *
- * AuthProvider umschließt die gesamte App, damit alle
- * Komponenten auf den Login-Status zugreifen können.
- *
- * ProtectedRoute schützt alle Admin-Seiten –
- * nicht eingeloggte Benutzer werden zur Login-Seite weitergeleitet.
+ * Innere App-Komponente — hat Zugriff auf SettingsContext
+ * und kann daraus das MUI-Theme dynamisch ableiten.
  */
-export default function App() {
+function AppRoutes() {
+  const { settings } = useSettings();
+
+  const theme = useMemo(() => createTheme({
+    palette: {
+      primary: {
+        main: settings?.primaryColor || '#1976d2',
+      },
+      secondary: {
+        main: settings?.secondaryColor || '#dc004e',
+      },
+    },
+  }), [settings?.primaryColor, settings?.secondaryColor]);
+
   return (
-    <AuthProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
         <Routes>
           {/* Öffentliche Seiten */}
@@ -44,27 +59,35 @@ export default function App() {
 
           {/* Geschützte Admin-Seiten */}
           <Route path="/admin" element={
-            <ProtectedRoute>
-              <Layout><AdminDashboardPage /></Layout>
-            </ProtectedRoute>
+            <ProtectedRoute><Layout><AdminDashboardPage /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/services" element={
-            <ProtectedRoute>
-              <Layout><AdminServicePage /></Layout>
-            </ProtectedRoute>
+            <ProtectedRoute><Layout><AdminServicePage /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/requests" element={
-            <ProtectedRoute>
-              <Layout><AdminRequestPage /></Layout>
-            </ProtectedRoute>
+            <ProtectedRoute><Layout><AdminRequestPage /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/requests/:id" element={
-            <ProtectedRoute>
-              <Layout><AdminRequestDetailPage /></Layout>
-            </ProtectedRoute>
+            <ProtectedRoute><Layout><AdminRequestDetailPage /></Layout></ProtectedRoute>
+          } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute><Layout><AdminUserPage /></Layout></ProtectedRoute>
+          } />
+          <Route path="/admin/settings" element={
+            <ProtectedRoute><Layout><AdminSettingsPage /></Layout></ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </ThemeProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <SettingsProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </SettingsProvider>
   );
 }
