@@ -22,7 +22,7 @@ export default function Layout({ children }) {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 
       {/* Skip-Link – nur bei Tastaturfokus sichtbar */}
-      <a href="#main-content" className="skip-link">
+      <a href="#main-content" className="skip-link" tabIndex={0}>
         Zum Hauptinhalt springen
       </a>
 

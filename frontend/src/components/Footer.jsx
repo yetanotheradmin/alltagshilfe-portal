@@ -1,14 +1,11 @@
+import { Link as RouterLink } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
-import Link from '@mui/material/Link';
+import MuiLink from '@mui/material/Link';
+import { useSettings } from '../context/SettingsContext';
 
-/**
- * Globale Fußzeile mit Links zu Datenschutz und Impressum.
- * Verwendet semantisches <footer>-Element.
- */
 export default function Footer() {
-  const navigate = useNavigate();
+  const { settings } = useSettings();
 
   return (
     <Box
@@ -21,20 +18,28 @@ export default function Footer() {
         textAlign: 'center',
       }}
     >
+      {/* Kontaktdaten aus Portaleinstellungen */}
+      {(settings?.contactEmail || settings?.contactPhone) && (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          {settings.contactEmail && (
+            <MuiLink href={`mailto:${settings.contactEmail}`} sx={{ mr: 2 }}>
+              {settings.contactEmail}
+            </MuiLink>
+          )}
+          {settings.contactPhone && (
+            <span>{settings.contactPhone}</span>
+          )}
+        </Typography>
+      )}
+
+      {/* Navigation */}
       <Typography variant="body2" color="text.secondary">
-        <Link
-          component="button"
-          onClick={() => navigate('/privacy')}
-          sx={{ mr: 2 }}
-        >
+        <MuiLink component={RouterLink} to="/privacy" sx={{ mr: 2 }}>
           Datenschutz
-        </Link>
-        <Link
-          component="button"
-          onClick={() => navigate('/imprint')}
-        >
+        </MuiLink>
+        <MuiLink component={RouterLink} to="/imprint">
           Impressum
-        </Link>
+        </MuiLink>
       </Typography>
     </Box>
   );

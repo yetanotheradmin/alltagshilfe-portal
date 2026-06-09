@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useSettings } from '../context/SettingsContext';
 
 /**
  * Globale Navigation mit responsivem Verhalten.
@@ -38,6 +39,7 @@ export default function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { settings } = useSettings();
 
   function handleNavigate(path) {
     navigate(path);
@@ -59,7 +61,7 @@ export default function Header() {
           onKeyDown={(e) => e.key === 'Enter' && navigate('/')}
           aria-label="Zur Startseite"
         >
-          AlltagsHilfe Portal
+          {settings?.portalTitle || 'AlltagsHilfe Portal'}
         </Typography>
 
         {/* Desktop-Navigation */}
