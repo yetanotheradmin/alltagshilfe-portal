@@ -20,7 +20,6 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-
 /**
  * Stellt Endpunkte für Login, Logout und den aktuellen Benutzer bereit.
  *
@@ -44,36 +43,34 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto dto,
-                                HttpServletRequest request) {
-    try {
-        Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            HttpServletRequest request) {
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(auth);
 
-        // Session explizit erstellen und Authentication darin speichern
-        HttpSession session = request.getSession(true);
-        session.setAttribute(
-            "SPRING_SECURITY_CONTEXT",
-            SecurityContextHolder.getContext()
-        );
+            // Session explizit erstellen und Authentication darin speichern
+            HttpSession session = request.getSession(true);
+            session.setAttribute(
+                    "SPRING_SECURITY_CONTEXT",
+                    SecurityContextHolder.getContext());
 
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow();
+            User user = userRepository.findByEmail(dto.getEmail()).orElseThrow();
 
-        UserResponseDto response = new UserResponseDto();
-        response.setId(user.getId());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole().name());
+            UserResponseDto response = new UserResponseDto();
+            response.setId(user.getId());
+            response.setName(user.getName());
+            response.setEmail(user.getEmail());
+            response.setRole(user.getRole().name());
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
 
-    } catch (BadCredentialsException e) {
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body(Map.of("message", "E-Mail oder Passwort ist falsch."));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "E-Mail oder Passwort ist falsch."));
+        }
     }
-}
 
     /**
      * Gibt den aktuell eingeloggten Benutzer zurück.
@@ -87,7 +84,7 @@ public class AuthController {
         if (auth == null || !auth.isAuthenticated()
                 || auth.getPrincipal().equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "Nicht eingeloggt."));
+                    .body(Map.of("message", "Nicht eingeloggt."));
         }
 
         String email = auth.getName();
@@ -104,10 +101,14 @@ public class AuthController {
 
     /**
      * Logout-Endpunkt.
-     * Löscht die aktuelle Session serverseitig.
+     * Löscht die aktuelle Session serverseitig und invalidiert den Cookie.
      */
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // false = keine neue Session anlegen
+        if (session != null) {
+            session.invalidate(); // Session serverseitig löschen
+        }
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok(Map.of("message", "Erfolgreich ausgeloggt."));
     }
