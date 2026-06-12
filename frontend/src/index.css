@@ -77,3 +77,63 @@ body.high-contrast .MuiButton-root {
 .skip-link:focus {
   top: 0;
 }
+
+
+/* =============================================
+   Hochkontrastmodus – Formularfelder
+   MUI-Komponenten explizit überschreiben da
+   sie eigene Styles mitbringen.
+   ============================================= */
+body.high-contrast .MuiInputBase-root {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiInputBase-input {
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+  border-width: 2px !important;
+}
+
+body.high-contrast .MuiInputLabel-root {
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiInputLabel-root.Mui-focused {
+  color: #ffff00 !important;
+}
+
+body.high-contrast .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #ffff00 !important;
+}
+
+body.high-contrast .MuiFormHelperText-root {
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiSelect-icon {
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiMenuItem-root {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiMenuItem-root:hover,
+body.high-contrast .MuiMenuItem-root.Mui-selected {
+  background-color: #333333 !important;
+  color: #ffff00 !important;
+}
+
+body.high-contrast .MuiFormControlLabel-label {
+  color: #ffffff !important;
+}
+
+body.high-contrast .MuiCheckbox-root,
+body.high-contrast .MuiRadio-root {
+  color: #ffffff !important;
+}
