@@ -8,7 +8,7 @@ import { fetchCurrentUser, login as apiLogin, logout as apiLogout } from '../api
  * Verwendung in einer Komponente:
  * const { user, login, logout } = useAuth();
  */
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined);

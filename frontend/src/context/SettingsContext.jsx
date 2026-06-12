@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { fetchSettings } from '../api/settingsApi';
 
-const SettingsContext = createContext(null);
+export const SettingsContext = createContext(null);
 
 export function SettingsProvider({ children }) {
     const [settings, setSettings] = useState(null);
