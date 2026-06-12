@@ -50,7 +50,7 @@ export default function HomePage() {
         >
           {settings.portalTitle}
         </Typography>
-        <Typography variant="h6" color="text.secondary" gutterBottom>
+        <Typography variant="h6" component="h2" color="text.secondary" gutterBottom>
           {settings.municipalityName}
         </Typography>
         <Typography
@@ -71,7 +71,7 @@ export default function HomePage() {
 
       {/* Kontaktbereich */}
       <Paper elevation={1} sx={{ p: { xs: 2, md: 4 }, mt: 6 }}>
-        <Typography variant="h6" gutterBottom textAlign="center">
+        <Typography variant="h6" component="h2" gutterBottom textAlign="center">
           Kontakt
         </Typography>
         <Grid container spacing={2} justifyContent="center">
