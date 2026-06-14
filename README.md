@@ -76,6 +76,35 @@ Läuft auf: http://localhost:5173
 
 ---
 
+## Produktionsbetrieb (PostgreSQL)
+
+Standardmäßig läuft das Backend mit einer H2-In-Memory-Datenbank (siehe oben) –
+ideal für Entwicklung und Tests, da bei jedem Start ein reproduzierbarer
+Ausgangszustand mit Demo-Daten erzeugt wird.
+
+Für einen Betrieb mit dauerhafter Datenspeicherung steht zusätzlich ein
+Spring-Profil `prod` mit PostgreSQL-Anbindung zur Verfügung
+(`backend/src/main/resources/application-prod.properties`). Der
+PostgreSQL-Treiber ist bereits in der `pom.xml` enthalten.
+
+```bash
+# 1. Lokale PostgreSQL-Instanz starten
+docker compose up -d
+
+# 2. Backend mit dem Produktionsprofil starten
+cd backend
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
+Das Schema wird über `ddl-auto=update` angelegt und bei weiteren Starts
+beibehalten; der `DataInitializer` prüft vor dem Anlegen der Demo-Daten,
+ob die jeweiligen Datensätze bereits existieren, sodass beim Neustart keine
+Duplikate entstehen. Verbindungsparameter lassen sich über die
+Umgebungsvariablen `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` und
+`DB_PASSWORD` anpassen (Defaults siehe `docker-compose.yml`).
+
+---
+
 ## Tests
 
 ### Backend
@@ -118,13 +147,17 @@ Beim Start werden automatisch Demo-Daten angelegt:
 ```
 alltagshilfe-portal/
 ├── backend/                        # Spring Boot
-│   └── src/main/java/de/alltagshilfe/backend/
-│       ├── config/                 # Security, CORS, DataInitializer
-│       ├── controller/             # REST-Controller (public + admin)
-│       ├── dto/                    # Request/Response-DTOs
-│       ├── entity/                 # JPA-Entities
-│       ├── repository/             # Spring Data Repositories
-│       └── service/                # Business-Logik
+│   └── src/main/
+│       ├── java/de/alltagshilfe/backend/
+│       │   ├── config/             # Security, CORS, DataInitializer
+│       │   ├── controller/         # REST-Controller (public + admin)
+│       │   ├── dto/                # Request/Response-DTOs
+│       │   ├── entity/             # JPA-Entities
+│       │   ├── repository/         # Spring Data Repositories
+│       │   └── service/            # Business-Logik
+│       └── resources/
+│           ├── application.properties       # Dev: H2 In-Memory
+│           └── application-prod.properties  # Prod: PostgreSQL
 ├── frontend/                       # React + MUI
 │   └── src/
 │       ├── api/                    # Fetch-Funktionen (authApi, serviceApi, …)
@@ -132,6 +165,7 @@ alltagshilfe-portal/
 │       ├── context/                # AuthContext, SettingsContext
 │       ├── pages/                  # Öffentliche Seiten + Admin-Seiten
 │       └── test/                   # Vitest-Tests
+├── docker-compose.yml              # Lokale PostgreSQL-Instanz (Profil "prod")
 └── docs/
     ├── screenshots/
     │   ├── final/                  # Finale UI-Screenshots
@@ -146,9 +180,12 @@ alltagshilfe-portal/
 ## Barrierefreiheit
 
 - Lighthouse Accessibility-Audit: **100/100** (Anfrageformular), **100/100** (Startseite)
-- WCAG-relevante Umsetzungen: Kontrastmodus (1.4.3), Schriftgrößenanpassung (1.4.4),
-  Tastaturbedienung (2.1.1), sichtbarer Fokus (2.4.7), Skip-Link (2.4.1),
-  Überschriftenhierarchie (1.3.1), Formular-Labels und Fehlermeldungen (1.3.1, 3.3.1)
+- Die Umsetzung orientiert sich an zentralen Erfolgskriterien der WCAG 2.1 (Stufe AA):
+  Kontrastmodus (1.4.3), Schriftgrößenanpassung (1.4.4), Tastaturbedienung (2.1.1),
+  sichtbarer Fokus (2.4.7), Skip-Link (2.4.1), Überschriftenhierarchie (1.3.1),
+  Formular-Labels und Fehlermeldungen (1.3.1, 3.3.1). Automatisierte (Lighthouse) und
+  manuelle Tastaturtests ergaben in den geprüften Bereichen keine Auffälligkeiten; eine
+  förmliche WCAG-Zertifizierung wird nicht behauptet.
 - Screenshots: `docs/screenshots/accessibility/`
 
 ---
@@ -181,3 +218,15 @@ Portalname, Farben und Kontaktdaten werden im Adminbereich unter
 Lokale Backend-Konfiguration (z. B. abweichender Port) in
 `backend/src/main/resources/application-local.properties` ablegen
 (wird von `.gitignore` ausgeschlossen).
+
+---
+
+## Sicherheitshinweis
+
+Authentifizierung (Spring Security, BCrypt) und die serverseitige
+Autorisierung der `/api/admin/**`-Endpunkte sind produktionsreif umgesetzt.
+Der CSRF-Schutz ist für die zustandslose JSON-Schnittstelle aktuell
+deaktiviert und durch eine restriktive CORS-Konfiguration flankiert –
+diese Kombination ist **nur für Entwicklungs- und Demozwecke** gedacht. Für
+einen produktiven Betrieb ist die Reaktivierung des CSRF-Schutzes mit einem
+tokenbasierten Verfahren erforderlich.

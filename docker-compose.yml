@@ -1,0 +1,21 @@
+# Lokale PostgreSQL-Instanz fuer das Produktionsprofil ("prod")
+#
+# Start:   docker compose up -d
+# Backend: cd backend && mvn spring-boot:run -Dspring-boot.run.profiles=prod
+#
+# Die Zugangsdaten entsprechen den Standardwerten in
+# backend/src/main/resources/application-prod.properties.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: alltagshilfe
+      POSTGRES_USER: alltagshilfe
+      POSTGRES_PASSWORD: alltagshilfe
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
