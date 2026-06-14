@@ -49,14 +49,35 @@ IU Internationale Hochschule.
 
 ## Voraussetzungen
 
-- Java 21+
-- Maven 3.9+
-- Node.js 20+
-- npm 10+
+| Werkzeug      | Version | Wofür                                  | Installation |
+|---------------|---------|------------------------------------------|--------------|
+| Git           | aktuell | Repository klonen                         | [git-scm.com](https://git-scm.com/downloads) |
+| Java (JDK)    | 21+     | Backend (Spring Boot)                     | [adoptium.net](https://adoptium.net/) |
+| Node.js       | 20+     | Frontend (React/Vite); bringt npm 10+ mit | [nodejs.org](https://nodejs.org/) |
+| Docker        | aktuell | optional – nur für PostgreSQL-Profil `prod` | [docker.com/get-started](https://www.docker.com/get-started/) |
+
+Maven wird nicht separat benötigt: Das Repository enthält den Maven Wrapper
+(`./mvnw` bzw. `mvnw.cmd`), der die passende Maven-Version automatisch
+herunterlädt.
+
+Versionen prüfen:
+```bash
+git --version
+java -version
+node -v
+npm -v
+docker -v        # nur falls PostgreSQL-Profil genutzt werden soll
+```
 
 ---
 
 ## Installation & Start
+
+### Repository klonen
+```bash
+git clone https://github.com/yetanotheradmin/alltagshilfe-portal.git
+cd alltagshilfe-portal
+```
 
 ### Backend
 ```bash
@@ -77,6 +98,9 @@ Läuft auf: http://localhost:5173
 ---
 
 ## Produktionsbetrieb (PostgreSQL)
+
+Für diesen Abschnitt wird [Docker](https://www.docker.com/get-started/) (inkl.
+Docker Compose) benötigt.
 
 Standardmäßig läuft das Backend mit einer H2-In-Memory-Datenbank (siehe oben) –
 ideal für Entwicklung und Tests, da bei jedem Start ein reproduzierbarer
